@@ -5,12 +5,77 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
-    <TextView
-        android:text="notllllllif Tab"
-        android:textSize="24sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <!-- Welcome Message -->
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome, Anosha!"
+            android:textSize="24sp"
+            android:textColor="#213448"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
 
+        <!-- Liked Songs Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Liked Songs"
+            android:textSize="18sp"
+            android:textColor="#547792"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/likedSongsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gap="12dp">
+
+                <!-- Song cards dynamically inflated here -->
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- New Songs Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Songs"
+            android:textSize="18sp"
+            android:textColor="#547792"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/newSongsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gap="12dp">
+
+                <!-- Song cards dynamically inflated here -->
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
 
 </FrameLayout>
