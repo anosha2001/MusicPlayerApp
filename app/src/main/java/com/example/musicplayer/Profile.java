@@ -19,12 +19,12 @@ import android.widget.Toast;
 public class Profile extends Fragment {
 
 
-    private TextView displayName, displayUsername, displayEmail;
-    private EditText editName, editUsername, editEmail;
-    private ImageView editIconName, editIconUsername, editIconEmail;
+    private TextView displayName, displayEmail;
+    private EditText editName, editEmail;
+    private ImageView editIconName, editIconEmail;
     private Button buttonUpdateProfile;
 
-    private SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences;
 
     public Profile() {
         // Required empty public constructor
@@ -49,9 +49,9 @@ public class Profile extends Fragment {
         buttonUpdateProfile = view.findViewById(R.id.buttonUpdateProfile);
 
         // SharedPreferences
-        SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String name = prefs.getString("name", "Guest");
-        String email = prefs.getString("email", "No email");
+        sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString("name", "Guest");
+        String email = sharedPreferences.getString("email", "No email");
 
         displayName.setText("Name: " + name);
 
