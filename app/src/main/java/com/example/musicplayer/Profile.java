@@ -1,11 +1,19 @@
 package com.example.musicplayer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 
 public class Profile extends Fragment {
 
@@ -23,6 +34,11 @@ public class Profile extends Fragment {
     private EditText editName, editEmail;
     private ImageView editIconName, editIconEmail;
     private Button buttonUpdateProfile;
+
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private ImageView profileImageView;
 
     SharedPreferences sharedPreferences;
 
@@ -37,7 +53,9 @@ public class Profile extends Fragment {
         View view=inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Initialize Views
+
         displayName = view.findViewById(R.id.displayName);
+
         displayEmail = view.findViewById(R.id.displayEmail);
 
         editName = view.findViewById(R.id.editName);
@@ -64,14 +82,57 @@ public class Profile extends Fragment {
         // Update Button
         buttonUpdateProfile.setOnClickListener(v -> saveProfile());
 
-        // Optional: Upload Picture Button
+        profileImageView = view.findViewById(R.id.profileImage); // Add this ImageView to your XML
+        loadProfilePicture(profileImageView);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+
+                        try {
+                            InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+                            Bitmap selectedImage = BitmapFactory.decodeStream(inputStream);
+
+                            // Show image
+                            profileImageView.setImageBitmap(selectedImage);
+
+                            // Convert to Base64
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            byte[] imageBytes = baos.toByteArray();
+                            String base64Image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+                            // Save to SharedPreferences
+                            sharedPreferences.edit().putString("profile_pic", base64Image).apply();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
         view.findViewById(R.id.fabUploadProfilePic).setOnClickListener(v -> {
-            // TODO: Add image upload logic (camera/gallery intent)
-            Toast.makeText(getContext(), "Upload picture clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
         });
+
 
         return view;
     }
+
+    private void loadProfilePicture(ImageView imageView) {
+        String base64Image = sharedPreferences.getString("profile_pic", null);
+        if (base64Image != null) {
+            byte[] imageBytes = Base64.decode(base64Image, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
 
     private void toggleEditField(EditText editText) {
         if (editText.getVisibility() == View.GONE) {
