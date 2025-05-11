@@ -1,34 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="140dp"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:layout_marginEnd="12dp"
-    android:background="@drawable/song_card_bg"
-    android:elevation="2dp">
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal"-->
+<!--    android:padding="10dp"-->
+<!--    android:background="@drawable/song_card_bg"-->
+<!--    android:elevation="2dp">-->
 
-    <!-- Album Art / Song Image -->
+<!--    <ImageView-->
+<!--        android:id="@+id/imageThumbnail"-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:src="@drawable/ic_music_placeholder" />-->
+
+<!--    <LinearLayout-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/textSongName"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"/>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/textArtistName"-->
+<!--            android:textSize="14sp"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"/>-->
+<!--    </LinearLayout>-->
+
+<!--</LinearLayout>-->
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@drawable/song_card_bg"
+    android:padding="8dp">
+
     <ImageView
-        android:id="@+id/songImage"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:id="@+id/ivThumbnail"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_music_placeholder"
-        android:contentDescription="Song Image" />
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true" />
 
-    <!-- Song Title -->
-    <TextView
-        android:id="@+id/songTitle"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_toEndOf="@id/ivThumbnail"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Song Title"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:layout_marginTop="6dp" />
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvSongName"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvArtistName"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivLike"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_heart_outline" />
+</RelativeLayout>
