@@ -90,10 +90,10 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tvResult"
+                android:id="@+id/tvWelcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome, Anosha!"
+                android:text="Welcome"
                 android:textSize="24sp"
                 android:textColor="#213448"
                 android:textStyle="bold"

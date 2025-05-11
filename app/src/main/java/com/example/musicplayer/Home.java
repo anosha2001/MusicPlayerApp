@@ -1,6 +1,10 @@
 package com.example.musicplayer;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +53,14 @@ public class Home extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String name = prefs.getString("name", "Guest");
+        String email = prefs.getString("email", "No email");
+
+        TextView nameText = view.findViewById(R.id.tvWelcome);
+        nameText.setText("Welcome, " + name + "!");
+
 
         // Initialize RecyclerViews
         recyclerLiked = view.findViewById(R.id.recyclerLikedSongs);

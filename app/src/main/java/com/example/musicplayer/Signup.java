@@ -66,12 +66,19 @@ public class Signup extends AppCompatActivity {
                             String userId = mAuth.getCurrentUser().getUid();
 
                             // Create a User object
-                            User user = new User(name, email);
+                            User user = new User(name, email, password);
 
                             // Save user data in Realtime Database
                             databaseReference.child(userId).setValue(user)
                                     .addOnCompleteListener(saveTask -> {
                                         if (saveTask.isSuccessful()) {
+                                            getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                                    .edit()
+                                                    .putString("name", name)
+                                                    .putString("password",password)
+                                                    .putString("email", email)
+                                                    .apply();
+
                                             Toast.makeText(Signup.this, "Account Created", Toast.LENGTH_SHORT).show();
 
                                             // Redirect to login or home screen
@@ -96,11 +103,12 @@ public class Signup extends AppCompatActivity {
 
     // User class for storing data in Firebase
     public static class User {
-        public String name, email;
+        public String name, email,password;
 
-        public User(String name, String email) {
+        public User(String name, String email, String password) {
             this.name = name;
             this.email = email;
+            this.password = password;
         }
     }
 }

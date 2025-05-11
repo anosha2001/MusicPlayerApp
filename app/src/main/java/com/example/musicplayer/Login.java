@@ -1,7 +1,9 @@
 package com.example.musicplayer;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
 
@@ -21,6 +24,7 @@ public class Login extends AppCompatActivity {
     private TextView signupLink;
 
     private FirebaseAuth mAuth;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +34,19 @@ public class Login extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        sharedPreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
+
         // Link UI components
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         loginButton = findViewById(R.id.loginButton);
         signupLink = findViewById(R.id.signupLink);
+
+        // Load saved credentials if available
+        String savedEmail = sharedPreferences.getString("email", "");
+        String savedPassword = sharedPreferences.getString("password", "");
+        emailInput.setText(savedEmail);
+        passwordInput.setText(savedPassword);
 
         // Handle Login Button Click
         loginButton.setOnClickListener(view -> {
@@ -56,6 +68,14 @@ public class Login extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                            // Get user (optional: retrieve more info)
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("email", user.getEmail());
+                                // If you have username stored separately, fetch and save it too
+                                editor.apply();
+                            }
 
                             // Redirect to Home fragment
                             Intent intent = new Intent(Login.this, MainActivity.class);
