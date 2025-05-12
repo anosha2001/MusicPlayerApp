@@ -8,11 +8,13 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
         android:queryHint="Search for songs or artists" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearchResults"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textColor="@color/colorWhite"
         android:padding="8dp" />
 </LinearLayout>

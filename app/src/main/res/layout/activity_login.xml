@@ -21,8 +21,8 @@
         android:contentDescription="App Logo" />
 
     <TextView
-        android:text="Login"
-        android:textColor="@color/colorPrimary"
+        android:text="Musify"
+        android:textColor="@color/colorWhite"
         android:textSize="28sp"
         android:layout_marginBottom="24dp"
         android:textStyle="bold"
@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimaryDark"
         android:padding="12dp"
+        android:textColor="@color/colorWhite"
         android:layout_marginBottom="16dp"/>
 
     <EditText
@@ -47,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimaryDark"
+        android:textColor="@color/colorWhite"
         android:padding="12dp"
         android:layout_marginBottom="24dp"/>
 

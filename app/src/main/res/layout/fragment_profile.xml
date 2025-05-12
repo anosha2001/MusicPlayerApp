@@ -43,7 +43,7 @@
 
             <TextView
                 android:text="Profile"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorWhite"
                 android:textSize="24sp"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -63,8 +63,8 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Name: Anosha"
-                    android:textColor="#547792"
+                    android:text="Name:"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -81,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Full Name"
                 android:visibility="gone"
+                android:textColor="@color/colorWhite"
                 android:backgroundTint="@color/colorPrimaryDark"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp" />
@@ -99,8 +100,8 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Email: anosha@email.com"
-                    android:textColor="#547792"
+                    android:text="Email:"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -118,6 +119,7 @@
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:visibility="gone"
+                android:textColor="@color/colorWhite"
                 android:backgroundTint="@color/colorPrimaryDark"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp" />
