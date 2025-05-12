@@ -2,8 +2,10 @@ package com.example.musicplayer;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,15 +19,16 @@ import com.bumptech.glide.Glide;
 
 public class Player extends AppCompatActivity {
 
-    private TextView tvSongName, tvArtistName;
+    private TextView tvSongName, tvArtistName, tvCurrentTime, tvDuration;
     private ImageView ivThumbnail;
-    private Button btnPlayPause;
+    private Button btnPlayPause, btnBack;
+    private SeekBar seekBar;
 
     private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
     private String songPath;
 
-
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,10 @@ public class Player extends AppCompatActivity {
         tvArtistName = findViewById(R.id.tvPlayerArtistName);
         ivThumbnail = findViewById(R.id.ivPlayerThumbnail);
         btnPlayPause = findViewById(R.id.btnPlayPause);
+        btnBack = findViewById(R.id.btnBack);
+        seekBar = findViewById(R.id.seekBar);
+        tvCurrentTime = findViewById(R.id.tvCurrentTime);
+        tvDuration = findViewById(R.id.tvDuration);
 
         // Get data from intent
         String songName = getIntent().getStringExtra("songName");
@@ -57,17 +64,21 @@ public class Player extends AppCompatActivity {
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(songPath);
-            mediaPlayer.prepareAsync(); // Prepare asynchronously
+            mediaPlayer.prepareAsync();
             mediaPlayer.setOnPreparedListener(mp -> {
                 isPlaying = true;
                 mediaPlayer.start();
                 btnPlayPause.setText("Pause");
+                seekBar.setMax(mediaPlayer.getDuration()); // Set max seek bar value to song duration
+                updateSeekBar();
+                tvDuration.setText(formatTime(mediaPlayer.getDuration()));
             });
         } catch (Exception e) {
             Toast.makeText(this, "Error loading song", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
+        // Play/Pause Button
         btnPlayPause.setOnClickListener(v -> {
             if (mediaPlayer != null) {
                 if (isPlaying) {
@@ -80,6 +91,39 @@ public class Player extends AppCompatActivity {
                 isPlaying = !isPlaying;
             }
         });
+
+        // Back Button
+        btnBack.setOnClickListener(v -> finish());
+
+        // SeekBar Listener
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser && mediaPlayer != null) {
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+    }
+
+    private void updateSeekBar() {
+        if (mediaPlayer != null) {
+            seekBar.setProgress(mediaPlayer.getCurrentPosition());
+            tvCurrentTime.setText(formatTime(mediaPlayer.getCurrentPosition())); // Update current time
+            handler.postDelayed(this::updateSeekBar, 1000); // Update every second
+        }
+    }
+
+    private String formatTime(int milliseconds) {
+        int minutes = (milliseconds / 1000) / 60;
+        int seconds = (milliseconds / 1000) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     @Override

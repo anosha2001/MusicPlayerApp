@@ -1,64 +1,116 @@
 package com.example.musicplayer;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LikedSongs#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class LikedSongs extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    RecyclerView recyclerLikedSongs;
+    SongAdapter likedAdapter;
+    List<Song> likedList = new ArrayList<>();
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    DatabaseReference dbRef;
 
     public LikedSongs() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LikedSongs.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LikedSongs newInstance(String param1, String param2) {
-        LikedSongs fragment = new LikedSongs();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_liked_songs, container, false);
+
+        // Initialize RecyclerView
+        recyclerLikedSongs = view.findViewById(R.id.recyclerLikedSongs);
+        recyclerLikedSongs.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Initialize Firebase Database reference
+        dbRef = FirebaseDatabase.getInstance().getReference("songs");
+
+        // Initialize Adapter for liked songs
+        likedAdapter = new SongAdapter(getContext(), likedList, songActionListener);
+        recyclerLikedSongs.setAdapter(likedAdapter);
+
+        // Fetch liked songs
+        fetchLikedSongs();
+
+        return view;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    private final SongAdapter.OnSongActionListener songActionListener = new SongAdapter.OnSongActionListener() {
+        @Override
+        public void onSongClick(Song song) {
+            Intent intent = new Intent(getContext(), Player.class);
+            intent.putExtra("songName", song.getSongName());
+            intent.putExtra("artistName", song.getArtistName());
+            intent.putExtra("songPath", song.getSongPath());
+            intent.putExtra("songThumbnail", song.getSongThumbnail());
+            startActivity(intent);
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_liked_songs, container, false);
+        @Override
+        public void onLikeToggle(Song song, boolean isLiked) {
+            // Update the song's liked state in the Firebase database
+            String songKey = song.getId();  // Assuming song has a unique ID
+            DatabaseReference songRef = dbRef.child(songKey);
+
+            // Toggle the like status
+            songRef.child("isLiked").setValue(isLiked);
+
+            // Update the song object and refresh adapters
+            song.setLiked(isLiked);
+            likedList.remove(song);
+            likedAdapter.notifyDataSetChanged();
+        }
+    };
+
+    private void fetchLikedSongs() {
+        // Query to fetch songs that are liked (isLiked = true)
+        dbRef.orderByChild("isLiked").equalTo(true)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        likedList.clear();  // Clear the existing liked list
+
+                        // Add all liked songs to the list
+                        for (DataSnapshot songSnap : snapshot.getChildren()) {
+                            Song song = songSnap.getValue(Song.class);
+                            if (song != null) {
+                                likedList.add(song);
+                            }
+                        }
+
+                        likedAdapter.notifyDataSetChanged();  // Update the UI with liked songs
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle error
+                        Log.e("LikedSongs", "Error fetching liked songs.", error.toException());
+                    }
+                });
     }
 }
