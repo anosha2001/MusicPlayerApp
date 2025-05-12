@@ -41,6 +41,8 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:background="@drawable/song_card_bg"
+    android:layout_marginBottom="10dp"
+    android:backgroundTint="@color/colorPrimaryDark"
     android:padding="8dp">
 
     <ImageView
@@ -64,13 +66,15 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"/>
 
         <TextView
             android:id="@+id/tvArtistName"
             android:textSize="14sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"/>
     </LinearLayout>
 
     <ImageView

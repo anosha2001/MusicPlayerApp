@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import com.example.musicplayer.Player;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

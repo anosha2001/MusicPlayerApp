@@ -1,19 +1,17 @@
 package com.example.musicplayer;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 
@@ -23,23 +21,16 @@ public class Player extends AppCompatActivity {
     private ImageView ivThumbnail;
     private Button btnPlayPause, btnBack;
     private SeekBar seekBar;
+    private ScrollView scrollView;
 
     private MediaPlayer mediaPlayer;
-    private boolean isPlaying = false;
-    private String songPath;
-
     private Handler handler = new Handler();
+    private boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_player);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         tvSongName = findViewById(R.id.tvPlayerSongName);
         tvArtistName = findViewById(R.id.tvPlayerArtistName);
@@ -49,11 +40,12 @@ public class Player extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         tvCurrentTime = findViewById(R.id.tvCurrentTime);
         tvDuration = findViewById(R.id.tvDuration);
+        scrollView = findViewById(R.id.scrollView);
 
         // Get data from intent
         String songName = getIntent().getStringExtra("songName");
         String artistName = getIntent().getStringExtra("artistName");
-        songPath = getIntent().getStringExtra("songPath");
+        String songPath = getIntent().getStringExtra("songPath");
         String songThumbnail = getIntent().getStringExtra("songThumbnail");
 
         tvSongName.setText(songName);
@@ -69,16 +61,15 @@ public class Player extends AppCompatActivity {
                 isPlaying = true;
                 mediaPlayer.start();
                 btnPlayPause.setText("Pause");
-                seekBar.setMax(mediaPlayer.getDuration()); // Set max seek bar value to song duration
+                seekBar.setMax(mediaPlayer.getDuration());
                 updateSeekBar();
                 tvDuration.setText(formatTime(mediaPlayer.getDuration()));
             });
         } catch (Exception e) {
             Toast.makeText(this, "Error loading song", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
 
-        // Play/Pause Button
+        // Play/Pause button functionality
         btnPlayPause.setOnClickListener(v -> {
             if (mediaPlayer != null) {
                 if (isPlaying) {
@@ -92,10 +83,10 @@ public class Player extends AppCompatActivity {
             }
         });
 
-        // Back Button
+        // Back button functionality
         btnBack.setOnClickListener(v -> finish());
 
-        // SeekBar Listener
+        // SeekBar listener
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -105,18 +96,18 @@ public class Player extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 
     private void updateSeekBar() {
         if (mediaPlayer != null) {
             seekBar.setProgress(mediaPlayer.getCurrentPosition());
-            tvCurrentTime.setText(formatTime(mediaPlayer.getCurrentPosition())); // Update current time
-            handler.postDelayed(this::updateSeekBar, 1000); // Update every second
+            tvCurrentTime.setText(formatTime(mediaPlayer.getCurrentPosition()));
+            handler.postDelayed(this::updateSeekBar, 1000);
         }
     }
 
@@ -132,6 +123,7 @@ public class Player extends AppCompatActivity {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 }

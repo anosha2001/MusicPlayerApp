@@ -95,7 +95,6 @@
                 android:layout_height="wrap_content"
                 android:text="Welcome"
                 android:textSize="24sp"
-                android:textColor="#213448"
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
 
